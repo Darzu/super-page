@@ -28,8 +28,14 @@ body {
   margin:auto;
   position:relative;
 }
-#center-column {
-  width:64rem;
+#outer-column {
+  width:50rem;/*changed once unleashed*/
+  margin-left:auto;
+  margin-right:auto;
+  position: relative;
+}
+#inner-column {
+  width:50rem;
   margin-left:auto;
   margin-right:auto;
   position: relative;
@@ -112,6 +118,9 @@ button:hover {
 }
 .cfa {
   display: none;
+  width:100%;
+  min-height: 50rem;
+  border:none;
 }
 canvas {
   pointer-events: none;
@@ -119,10 +128,10 @@ canvas {
   bottom: 0px; 
   left: 0px;
 }
-#underCanvas {
+#under-canvas {
   z-index: -10;
 }
-#overCanvas {
+#over-canvas {
   z-index: 10;
 }
 </style>
@@ -131,19 +140,22 @@ canvas {
 <!--                     ~ HTML ~                     -->
 <!-- ================================================ -->
 <body>
-  <div id="center-column">
-    <div class="v-spacer"></div>
-    <div id="page">
-      within
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-      within
+  <div id="outer-column">
+    <div id="inner-column">
+      <div class="v-spacer"></div>
+      <div id="page">
+        within
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        mid
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        within
+      </div>
+      <div class="v-spacer"></div>
+      <button class="center shake" id="unleash-btn" onclick="DZ.unleash()">Unleash</button>
+      <div class="v-spacer"></div>
     </div>
-    <div class="v-spacer"></div>
-    <button class="center shake" onclick="DZ.unleash()">Unleash</button>
-    <div class="v-spacer"></div>
-
-    <canvas id="underCanvas"></canvas>
-    <canvas id="overCanvas"></canvas>
+    <canvas id="under-canvas"></canvas>
+    <canvas id="over-canvas"></canvas>
   </div>
 <!-- ================================================ -->
 <!--                    ~ Scripts ~                   -->
@@ -154,22 +166,66 @@ console.log("hello world!")
 window.DZ = {}
 
 DZ.unleash = function() {
+  var $unleashBtn = document.getElementById("unleash-btn");
+  $unleashBtn.style.visibility = "hidden";
+
+  DZ.loadSeedRandomJs();
+
+  Math.seedrandom('dz');
+
   DZ.loadContextFreeJs()
 
-  var $centerColumn = document.getElementById("center-column")
-  var $underCanvas = document.getElementById("underCanvas")
-  $underCanvas.width = $centerColumn.clientWidth
-  $underCanvas.height = $centerColumn.clientHeight
+  DZ.draw("lawn");
+}
+
+DZ.draw = function(cfa) {
+  var bodyWidthRems = document.body.clientWidth / 12;
+
+  var $outerColumn = document.getElementById("outer-column")
+
+  $outerColumn.style.width= Math.max(bodyWidthRems, 75) + "rem";
+
+  var $underCanvas = document.getElementById("under-canvas")
+  $underCanvas.width = $outerColumn.clientWidth
+  $underCanvas.height = $outerColumn.clientHeight
 
   var x = $underCanvas.width / 2;
   var y = $underCanvas.height;
 
-  DZ.contextFree("cfa-tree", "underCanvas", x, y)
+  DZ.contextFree("cfa-"+cfa, "under-canvas", x, y)
+}
+
+DZ.gotoCfaEditor = function(cfa) {
+  var $page = document.getElementById("page");
+
+  //Empty page
+  while ($page.hasChildNodes()) {
+    $page.removeChild($page.lastChild);
+  }
+
+  var $cfa = document.getElementById("cfa-"+cfa);
+
+  $page.appendChild($cfa);
+
+  $cfa.style.display = "inline-block"
+
+  var $redraw = document.createElement("button");
+
+  $redraw.setAttribute("onclick", "DZ.draw('"+cfa+"')");
+
+  $redraw.innerHTML = "Redraw"
+
+  $page.appendChild($redraw);
+}
+
+DZ.loadSeedRandomJs = function() {
+  !function(a,b,c,d,e,f,g,h,i){function j(a){var b,c=a.length,e=this,f=0,g=e.i=e.j=0,h=e.S=[];for(c||(a=[c++]);d>f;)h[f]=f++;for(f=0;d>f;f++)h[f]=h[g=r&g+a[f%c]+(b=h[f])],h[g]=b;(e.g=function(a){for(var b,c=0,f=e.i,g=e.j,h=e.S;a--;)b=h[f=r&f+1],c=c*d+h[r&(h[f]=h[g=r&g+b])+(h[g]=b)];return e.i=f,e.j=g,c})(d)}function k(a,b){var c,d=[],e=typeof a;if(b&&"object"==e)for(c in a)try{d.push(k(a[c],b-1))}catch(f){}return d.length?d:"string"==e?a:a+"\0"}function l(a,b){for(var c,d=a+"",e=0;e<d.length;)b[r&e]=r&(c^=19*b[r&e])+d.charCodeAt(e++);return n(b)}function m(c){try{return a.crypto.getRandomValues(c=new Uint8Array(d)),n(c)}catch(e){return[+new Date,a,(c=a.navigator)&&c.plugins,a.screen,n(b)]}}function n(a){return String.fromCharCode.apply(0,a)}var o=c.pow(d,e),p=c.pow(2,f),q=2*p,r=d-1,s=c["seed"+i]=function(a,f,g){var h=[];f=1==f?{entropy:!0}:f||{};var r=l(k(f.entropy?[a,n(b)]:null==a?m():a,3),h),s=new j(h);return l(n(s.S),b),(f.pass||g||function(a,b,d){return d?(c[i]=a,b):a})(function(){for(var a=s.g(e),b=o,c=0;p>a;)a=(a+c)*d,b*=d,c=s.g(1);for(;a>=q;)a/=2,b/=2,c>>>=1;return(a+c)/b},r,"global"in f?f.global:this==c)};l(c[i](),b),g&&g.exports?g.exports=s:h&&h.amd&&h(function(){return s})}(this,[],Math,256,6,52,"object"==typeof module&&module,"function"==typeof define&&define,"random");
 }
 
 DZ.loadContextFreeJs = function() {
   //Originally from: https://code.google.com/p/contextfree/source/browse/trunk/contextfree.js
   //Modified by DZ
+  
   function min( list ){
     var min = { value: list[0], index: 0 };
     for( var i in list ) {
@@ -1109,7 +1165,7 @@ DZ.loadContextFreeJs = function() {
 startshape family
 
 rule family { 
-TREE {s 0.2} 
+TREE {s 0.2 r 45} 
 
 }
 
@@ -1148,6 +1204,68 @@ TREE {r -5 s .98}
 rule ZWEIG_RECHTS{
 TREE {r -10 s .99 }
 }
+</textarea>
+<textarea class="cfa" id="cfa-lawn">
+startshape start
+
+rule start{
+startGrass {s 0.25 hue 109  sat .58 b .47}
+
+}
+
+rule startGrass{
+rowsL { r -90}
+rowsR { r 90}
+
+}
+
+rule rowsL {
+rowL { y -0.1 b -0.3 }
+rowL { y -0.13 b 0.1 }
+rowL { y -0.16 b -0.1 }
+rowL { y -0.2 b 0.2 }
+rowL { y -0.23 b -0.2 }
+rowL { y -0.26  }
+ 
+}
+
+rule rowL {
+ rowL { y 0.1888 }
+
+ grass { s .03   r  135  } 
+}
+
+rule rowsR {
+rowR { y 0.1 b -0.3 }
+rowR { y 0.13 b 0.1 }
+rowR { y 0.16 b -0.1 }
+rowR { y 0.2 b 0.2 }
+rowR { y 0.23 b -0.2 }
+rowR { y 0.26  }
+ 
+}
+
+rule rowR {
+ rowR { y 0.32 }
+
+ grass { s .03   r  315  } 
+}
+
+rule grass 200 {
+ SQUARE { r 45 }
+ grass { x 0.5 y 0.5 r 1 b 0.005 }
+
+}
+
+rule grass  200 {
+ SQUARE { r 45 }
+ grass { x 0.5 y 0.5 r -1 b 0.005 }
+
+}
+
+rule grass 1 {
+}
+
 </textarea>
 </body>
 </html>

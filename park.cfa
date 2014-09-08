@@ -1,0 +1,132 @@
+startshape start
+
+rule start{
+startGrass {s 0.25 hue 109  sat .58 b .47}
+
+}
+
+rule startGrass{
+rowsL { r -90}
+rowsR { r 90}
+
+}
+
+rule rowsL {
+rowL { y -0.1 b -0.3 }
+rowL { y -0.13 b 0.1 }
+rowL { y -0.16 b -0.1 }
+rowL { y -0.2 b 0.2 }
+rowL { y -0.23 b -0.2 }
+rowL { y -0.26  }
+ 
+}
+
+rule rowL {
+ rowL { y 0.1888 }
+
+ grass { s .03   r  135  } 
+}
+
+rule rowsR {
+rowR { y 0.1 b -0.3 }
+rowR { y 0.13 b 0.1 }
+rowR { y 0.16 b -0.1 }
+rowR { y 0.2 b 0.2 }
+rowR { y 0.23 b -0.2 }
+rowR { y 0.26  }
+ 
+}
+
+rule rowR {
+ rowR { y 0.32 }
+
+ grass { s .03   r  315  } 
+}
+
+rule grass 200 {
+ SQUARE { r 45 }
+ grass { x 0.5 y 0.5 r 1 b 0.005 }
+
+}
+
+rule grass  200 {
+ SQUARE { r 45 }
+ grass { x 0.5 y 0.5 r -1 b 0.005 }
+
+}
+
+rule grass 1 {
+}
+
+
+rule MOUSECLICK{
+  startTree {  }
+}
+
+rule startTree{
+
+ tree { s .03  hue 26  sat .7 b .15 r  45  } 
+ 
+}
+
+rule tree 100 {
+ SQUARE { r 45 }
+ tree { x 0.5 y 0.5 s .985  r 3 }
+
+}
+
+rule tree  100 {
+ SQUARE { r 45 }
+ tree { x 0.5 y 0.5 s .985  r -3 }
+
+}
+
+rule tree  8 {
+ tree {}
+ branch {  s .5  r 45  }
+ branch {  s .5  r -45   }
+
+}
+
+rule tree  1 {
+ tree {}
+ branch {  s .5  r 45   }
+
+}
+
+rule tree  1 {
+ tree {}
+ branch {  s .5  r -45  }
+
+}
+
+rule branch 100 {
+ SQUARE { r 45 }
+ branch { x 0.5 y 0.5 s .985  r 3 }
+
+}
+
+rule branch  100 {
+ SQUARE { r 45 }
+ branch { x 0.5 y 0.5 s .985   r -3 }
+
+}
+
+rule branch  5 {
+ branch {}
+ branch {  s .5  r 45 }
+
+}
+
+rule branch  5 {
+ branch {}
+ branch {  s .5  r -45 }
+
+}
+
+
+rule branch  30 {
+ branch {}
+TRIANGLE { s 5 hue 94 sat 0.29  }
+
+}

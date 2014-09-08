@@ -1,0 +1,50 @@
+startshape START
+
+rule START { 
+LAWNR {s 0.025 hue 90 sat 25 b .02}
+LAWNL {s 0.025 hue 90 sat 25 b .02}
+}
+
+rule LAWNR 10 {
+GRASSL { }
+LAWNR { x 0.7} 
+}
+
+rule LAWNR 10 {
+GRASSR { }
+LAWNR { x 0.5} 
+}
+
+rule LAWNL 10 {
+GRASSL { }
+LAWNL { x -0.7} 
+}
+
+rule LAWNL 10 {
+GRASSR { }
+LAWNL { x -0.5} 
+}
+
+rule GRASSL  99 {
+CIRCLE { s .30 1 }
+
+GRASSL { y 0.4 s 0.98 r 2 }
+}
+
+rule GRASSL  5 {
+CIRCLE { s 0.30 1.5 }
+
+GRASSR { y 0.4 s 0.98 }
+}
+
+rule GRASSR  99 {
+CIRCLE { s .30 1 }
+
+GRASSR { y 0.4 s 0.98  r -2 }
+}
+
+rule GRASSR  5 {
+CIRCLE { s 0.30 1.5 }
+
+GRASSL { y 0.4 s 0.98 }
+}
