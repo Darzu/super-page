@@ -640,6 +640,10 @@ DZ.loadContextFreeJs = function() {
     
     compiled: null,
     _maxThreads: 30,
+    minTransformX: null,
+    minTransformY: null,
+    maxTransformX: null,
+    maxTransformY: null,
     
     queue: [],
     
@@ -729,7 +733,18 @@ DZ.loadContextFreeJs = function() {
       } else {
         transform = IdentityTransformation();
       }
-       
+
+      //Get max X and Y transform values
+      var topLeft = toAffineTransformation( 1, 0, 0, 1,
+                                          (-Renderer.width/2) / Renderer._globalScale,
+                                          (-Renderer.height/2) / Renderer._globalScale );
+      Renderer.minTransformX = Renderer.getTransformX(topLeft);
+      Renderer.minTransformY = Renderer.getTransformY(topLeft);
+      var bottomRight = toAffineTransformation( 1, 0, 0, 1,
+                                          (Renderer.width/2) / Renderer._globalScale,
+                                          (Renderer.height/2) / Renderer._globalScale );
+      Renderer.maxTransformX = Renderer.getTransformX(bottomRight);
+      Renderer.maxTransformY = Renderer.getTransformY(bottomRight);
 
       var foregroundColor = {h:0, s:0, b:0, a:1};
 
@@ -816,12 +831,37 @@ DZ.loadContextFreeJs = function() {
       Renderer.ctx.restore();
 
     },
+
+    getTransformX: function(transform) {
+      return transform[0][2];
+    },
+
+    getTransformY: function(transform) {
+      return transform[1][2];
+    },
+
+    threadedDraw: function(shape, transform, color){
+      this.start = function(){
+        Renderer.drawRule( shape, transform, color );
+      }
+    },
     
     drawShape: function( shape, transform, color, priority ){
       for( i=0; i<shape.draw.length; i++){
         var item = shape.draw[i];
 
         var localTransform = Renderer.adjustTransform( item, transform );
+
+        //Abort the rule if it is off canvas
+        var x = Renderer.getTransformX(localTransform);
+        var y = Renderer.getTransformY(localTransform);
+        if (x < Renderer.minTransformX
+          || x > Renderer.maxTransformX
+          || y < Renderer.minTransformY
+          || y > Renderer.maxTransformY) {
+          break; 
+        }
+
         var localColor = adjustColor( color, item );
         
         switch( item.shape ){
@@ -858,14 +898,8 @@ DZ.loadContextFreeJs = function() {
             });
             break;
                       
-          default:
-            var threadedDraw = function(shape, transform, color){
-              this.start = function(){
-                Renderer.drawRule( shape, transform, color );
-              }
-            }
-            
-            var tD = new threadedDraw( item.shape, localTransform, localColor );
+          default:            
+            var tD = new Renderer.threadedDraw( item.shape, localTransform, localColor );
             
             if( priority == 1 ){ Renderer.queue.unshift(tD); }
             else{ Renderer.queue.push( tD ); }
@@ -1209,7 +1243,7 @@ TREE {r -10 s .99 }
 startshape start
 
 rule start{
-startGrass {s 0.25 hue 109  sat .58 b .47}
+startGrass { s 0.25 hue 109  sat .58 b .47}
 
 }
 
