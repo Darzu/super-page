@@ -1243,7 +1243,7 @@ TREE {r -10 s .99 }
 startshape start
 
 rule start{
-startGrass { s 0.25 hue 109  sat .58 b .47}
+startGrass {s 0.25 hue 109  sat .58 b .47}
 
 }
 
@@ -1298,6 +1298,79 @@ rule grass  200 {
 }
 
 rule grass 1 {
+}
+
+
+rule MOUSECLICK{
+  startTree {  }
+}
+
+rule startTree{
+
+ tree { s .03  hue 26  sat .7 b .15 r  45  } 
+ 
+}
+
+rule tree 100 {
+ SQUARE { r 45 }
+ tree { x 0.5 y 0.5 s .985  r 3 }
+
+}
+
+rule tree  100 {
+ SQUARE { r 45 }
+ tree { x 0.5 y 0.5 s .985  r -3 }
+
+}
+
+rule tree  8 {
+ tree {}
+ branch {  s .5  r 45  }
+ branch {  s .5  r -45   }
+
+}
+
+rule tree  1 {
+ tree {}
+ branch {  s .5  r 45   }
+
+}
+
+rule tree  1 {
+ tree {}
+ branch {  s .5  r -45  }
+
+}
+
+rule branch 100 {
+ SQUARE { r 45 }
+ branch { x 0.5 y 0.5 s .985  r 3 }
+
+}
+
+rule branch  100 {
+ SQUARE { r 45 }
+ branch { x 0.5 y 0.5 s .985   r -3 }
+
+}
+
+rule branch  5 {
+ branch {}
+ branch {  s .5  r 45 }
+
+}
+
+rule branch  5 {
+ branch {}
+ branch {  s .5  r -45 }
+
+}
+
+
+rule branch  30 {
+ branch {}
+TRIANGLE { s 5 hue 94 sat 0.29  }
+
 }
 
 </textarea>
